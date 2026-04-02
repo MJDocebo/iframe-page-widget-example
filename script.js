@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Hash Verification Logic (From Previous Step)
+    // 2. Hash Verification Logic
     async function calculateSHA256(message) {
         const msgBuffer = new TextEncoder().encode(message);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -51,13 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. NEW: API Fetching Logic
+    // 3. API Fetching & Table Rendering Logic
     document.getElementById('fetch_api_btn').addEventListener('click', async () => {
         const clientId = document.getElementById('client_id_input').value;
         const clientSecret = document.getElementById('client_secret_input').value;
         const authCode = params.get('auth_code');
         const apiStatus = document.getElementById('api_status');
-        const courseList = document.getElementById('course_list');
+        
+        // UI Sections
+        const actionSections = document.getElementById('action_sections');
+        const resultsSection = document.getElementById('results_section');
+        const tableBody = document.getElementById('course_table_body');
         
         // Define your Docebo domain here
         const doceboDomain = 'https://mj-michael-james-demo.docebosaas.com';
@@ -68,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // STEP A: Exchange Auth Code for Access Token
             apiStatus.textContent = "Exchanging auth code for token...";
             
             const tokenBody = new URLSearchParams({
@@ -92,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tokenData = await tokenResponse.json();
             const accessToken = tokenData.access_token;
 
-            // STEP B: Fetch the Transcript using the Access Token
             apiStatus.textContent = "Token received! Fetching transcript...";
             
             const transcriptResponse = await fetch(`${doceboDomain}/report/v1/mytranscript?page=1&page_size=100`, {
@@ -106,47 +108,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const transcriptData = await transcriptResponse.json();
             const allItems = transcriptData.data.items;
-
-            // STEP C: Filter for completed courses and Render
             const completedCourses = allItems.filter(item => item.completion_date !== null);
             
-            courseList.innerHTML = ''; // Clear previous results
-            courseList.classList.remove('hidden');
+            // Clear out any old rows
+            tableBody.innerHTML = ''; 
 
             if (completedCourses.length === 0) {
-                courseList.innerHTML = '<li class="course-item">No completed courses found.</li>';
-                apiStatus.textContent = "Done.";
-                return;
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No completed courses found.</td></tr>';
+            } else {
+                // Build the table rows
+                completedCourses.forEach(course => {
+                    const tr = document.createElement('tr');
+                    
+                    // Handle Certificate URL Formatting
+                    let certHtml = '<span class="text-muted">None</span>';
+                    if (course.certificate_url) {
+                        const fullCertUrl = course.certificate_url.startsWith('http') 
+                            ? course.certificate_url 
+                            : `${doceboDomain}${course.certificate_url}`;
+                        certHtml = `<a href="${fullCertUrl}" target="_blank" class="cert-btn">Download</a>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td><strong>${course.name}</strong></td>
+                        <td>${course.type.toUpperCase()}</td>
+                        <td>${course.completion_date.split(' ')[0]}</td> <td>${certHtml}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
             }
 
-            completedCourses.forEach(course => {
-                const li = document.createElement('li');
-                li.className = 'course-item';
-                
-                // Format the output
-                let htmlContent = `
-                    <p class="course-title">${course.name}</p>
-                    <p class="course-detail"><strong>Type:</strong> ${course.type.toUpperCase()}</p>
-                    <p class="course-detail"><strong>Completed On:</strong> ${course.completion_date}</p>
-                `;
-
-                if (course.certificate_url) {
-                    // Docebo often returns relative URLs for certificates, so we prepend the domain
-                    const fullCertUrl = course.certificate_url.startsWith('http') 
-                        ? course.certificate_url 
-                        : `${doceboDomain}${course.certificate_url}`;
-                    htmlContent += `<a href="${fullCertUrl}" target="_blank" class="cert-link">Download Certificate</a>`;
-                }
-
-                li.innerHTML = htmlContent;
-                courseList.appendChild(li);
-            });
-
-            apiStatus.textContent = `Success! Found ${completedCourses.length} completed courses.`;
+            // SUCCESS FLOW: Hide the action inputs and show the table
+            actionSections.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
 
         } catch (error) {
             console.error(error);
-            apiStatus.textContent = `Error: ${error.message}. (Check console and verify CORS settings).`;
+            apiStatus.textContent = `Error: ${error.message}`;
+            apiStatus.style.color = "#721c24";
         }
     });
 });

@@ -17,27 +17,46 @@
             <p class="meta"><strong>Provided Hash:</strong> <span id="hash">...</span></p>
         </div>
         
-        <div class="verification-section">
-            <h3>1. Hash Verification</h3>
-            <input type="password" id="salt_input" placeholder="Enter Salt Secret">
-            <button id="verify_btn">Verify Hash</button>
-            <div id="result_box" class="hidden">
-                <p><strong>Calculated Hash:</strong> <br><span id="calc_hash_display" class="break-word"></span></p>
-                <div id="status_message"></div>
+        <div id="action_sections">
+            <div class="verification-section">
+                <h3>1. Hash Verification</h3>
+                <input type="password" id="salt_input" placeholder="Enter Salt Secret">
+                <button id="verify_btn">Verify Hash</button>
+                <div id="result_box" class="hidden">
+                    <p><strong>Calculated Hash:</strong> <br><span id="calc_hash_display" class="break-word"></span></p>
+                    <div id="status_message"></div>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h3>2. Fetch Transcript (API)</h3>
+                <p class="instructions">Paste your Client Secret to fetch completed courses.</p>
+                <input type="text" id="client_id_input" placeholder="Client ID" value="iframe-example">
+                <input type="password" id="client_secret_input" placeholder="Client Secret">
+                <button id="fetch_api_btn">Fetch Completed Courses</button>
+                
+                <div id="api_status"></div>
             </div>
         </div>
 
-        <div class="api-section">
-            <h3>2. Fetch Transcript (API)</h3>
-            <p class="instructions">Enter your OAuth App credentials to exchange the auth_code for a token and fetch completed courses.</p>
-            <input type="text" id="client_id_input" placeholder="Client ID">
-            <input type="password" id="client_secret_input" placeholder="Client Secret">
-            <button id="fetch_api_btn">Fetch Completed Courses</button>
-            
-            <div id="api_status"></div>
-            
-            <ul id="course_list" class="hidden"></ul>
+        <div id="results_section" class="hidden">
+            <h3 class="success-heading">✅ Completed Courses</h3>
+            <div class="table-responsive">
+                <table id="course_table">
+                    <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Type</th>
+                            <th>Completed On</th>
+                            <th>Certificate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="course_table_body">
+                        </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
     <script src="script.js"></script>
 </body>

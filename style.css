@@ -125,7 +125,8 @@ button:hover {
 }
 
 
-/* --- NEW API SECTION STYLES --- */
+/* --- REPLACE THE OLD COURSE LIST STYLES AT THE BOTTOM WITH THIS --- */
+
 .api-section {
     margin-top: 20px;
     padding-top: 20px;
@@ -141,52 +142,68 @@ input[type="text"] {
     margin-bottom: 10px;
 }
 
-#course_list {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 15px;
-}
-
-.course-item {
-    background: #fdfdfd;
-    border: 1px solid #e0e0e0;
-    border-left: 4px solid #003466;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-}
-
-.course-title {
-    font-weight: bold;
-    color: #333;
-    margin: 0 0 5px 0;
-    font-size: 15px;
-}
-
-.course-detail {
-    font-size: 12px;
-    color: #555;
-    margin: 3px 0;
-}
-
-.cert-link {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 12px;
-    color: #fff;
-    background: #28a745;
-    padding: 4px 8px;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-.cert-link:hover {
-    background: #218838;
-}
-
 #api_status {
     font-size: 12px;
     margin-top: 10px;
     font-style: italic;
     color: #666;
+}
+
+/* --- NEW TABLE STYLES --- */
+#results_section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #28a745;
+}
+
+.success-heading {
+    color: #155724;
+    margin-bottom: 15px;
+}
+
+.table-responsive {
+    overflow-x: auto; /* Adds a scrollbar if the table gets too wide */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background-color: white;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #003466;
+    color: white;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f4f7f9;
+}
+
+.cert-btn {
+    display: inline-block;
+    font-size: 11px;
+    color: #fff;
+    background: #28a745;
+    padding: 4px 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.cert-btn:hover {
+    background: #218838;
+}
+
+.text-muted {
+    color: #999;
+    font-style: italic;
 }
