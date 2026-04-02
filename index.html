@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docebo Iframe Listener</title>
+    <title>Docebo API Demo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,15 +18,25 @@
         </div>
         
         <div class="verification-section">
-            <h3>Hash Verification (Demo)</h3>
-            <p class="instructions">Enter the Docebo Salt Secret to verify the payload signature locally.</p>
+            <h3>1. Hash Verification</h3>
             <input type="password" id="salt_input" placeholder="Enter Salt Secret">
-            <button id="verify_btn">Verify Request</button>
-            
+            <button id="verify_btn">Verify Hash</button>
             <div id="result_box" class="hidden">
                 <p><strong>Calculated Hash:</strong> <br><span id="calc_hash_display" class="break-word"></span></p>
                 <div id="status_message"></div>
             </div>
+        </div>
+
+        <div class="api-section">
+            <h3>2. Fetch Transcript (API)</h3>
+            <p class="instructions">Enter your OAuth App credentials to exchange the auth_code for a token and fetch completed courses.</p>
+            <input type="text" id="client_id_input" placeholder="Client ID">
+            <input type="password" id="client_secret_input" placeholder="Client Secret">
+            <button id="fetch_api_btn">Fetch Completed Courses</button>
+            
+            <div id="api_status"></div>
+            
+            <ul id="course_list" class="hidden"></ul>
         </div>
     </div>
     <script src="script.js"></script>
