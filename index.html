@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iframe example</title>
-
+    <title>Docebo Iframe Listener</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Some Placeholder Text!</h1>
-
+    <div class="card">
+        <h2>User Information</h2>
+        <div id="data-container">
+            <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+            <p><strong>User ID:</strong> <span id="user_id">Loading...</span></p>
+            <p><strong>Course ID:</strong> <span id="course_id">N/A</span></p>
+            <hr>
+            <p class="meta"><strong>Auth Code:</strong> <span id="auth_code">...</span></p>
+            <p class="meta"><strong>Hash:</strong> <span id="hash">...</span></p>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
