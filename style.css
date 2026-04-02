@@ -1,44 +1,79 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f4f7f9;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+/* Add to existing CSS */
+.verification-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed #eee;
 }
 
-.card {
-    background: white;
-    padding: 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
-}
-
-h2 {
+h3 {
     margin-top: 0;
-    color: #003466; /* Docebo-ish Blue */
-    font-size: 1.2rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-}
-
-p {
-    font-size: 14px;
     color: #333;
-    margin: 10px 0;
+    font-size: 1.1rem;
 }
 
-span {
+.instructions {
+    font-size: 12px;
     color: #666;
-    font-family: monospace;
-    background: #f0f0f0;
-    padding: 2px 6px;
-    border-radius: 4px;
+    margin-bottom: 12px;
 }
 
-.meta {
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #003466;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #002244;
+}
+
+.hidden {
+    display: none;
+}
+
+#result_box {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+}
+
+.break-word {
+    word-break: break-all;
     font-size: 11px;
-    color: #999;
+}
+
+.success {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
 }

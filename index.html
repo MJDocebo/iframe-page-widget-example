@@ -12,10 +12,21 @@
         <div id="data-container">
             <p><strong>Username:</strong> <span id="username">Loading...</span></p>
             <p><strong>User ID:</strong> <span id="user_id">Loading...</span></p>
-            <p><strong>Course ID:</strong> <span id="course_id">N/A</span></p>
             <hr>
             <p class="meta"><strong>Auth Code:</strong> <span id="auth_code">...</span></p>
-            <p class="meta"><strong>Hash:</strong> <span id="hash">...</span></p>
+            <p class="meta"><strong>Provided Hash:</strong> <span id="hash">...</span></p>
+        </div>
+        
+        <div class="verification-section">
+            <h3>Hash Verification (Demo)</h3>
+            <p class="instructions">Enter the Docebo Salt Secret to verify the payload signature locally.</p>
+            <input type="password" id="salt_input" placeholder="Enter Salt Secret">
+            <button id="verify_btn">Verify Request</button>
+            
+            <div id="result_box" class="hidden">
+                <p><strong>Calculated Hash:</strong> <br><span id="calc_hash_display" class="break-word"></span></p>
+                <div id="status_message"></div>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
