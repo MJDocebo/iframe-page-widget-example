@@ -108,31 +108,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const transcriptData = await transcriptResponse.json();
             const allItems = transcriptData.data.items;
-            const completedCourses = allItems.filter(item => item.completion_date !== null);
+            
+            // NEW FILTER: Must be completed AND have a certificate
+            const certifiedCourses = allItems.filter(item => 
+                item.completion_date !== null && 
+                (item.has_certificate === true || item.certificate_url !== null)
+            );
             
             // Clear out any old rows
             tableBody.innerHTML = ''; 
 
-            if (completedCourses.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No completed courses found.</td></tr>';
+            if (certifiedCourses.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No certified courses found.</td></tr>';
             } else {
                 // Build the table rows
-                completedCourses.forEach(course => {
+                certifiedCourses.forEach(course => {
                     const tr = document.createElement('tr');
                     
-                    // Handle Certificate URL Formatting
-                    let certHtml = '<span class="text-muted">None</span>';
-                    if (course.certificate_url) {
-                        const fullCertUrl = course.certificate_url.startsWith('http') 
-                            ? course.certificate_url 
-                            : `${doceboDomain}${course.certificate_url}`;
-                        certHtml = `<a href="${fullCertUrl}" target="_blank" class="cert-btn">Download</a>`;
-                    }
+                    // 1. Setup Certificate URL
+                    const fullCertUrl = course.certificate_url.startsWith('http') 
+                        ? course.certificate_url 
+                        : `${doceboDomain}${course.certificate_url}`;
+                    const certHtml = `<a href="${fullCertUrl}" target="_blank" class="cert-btn">Download</a>`;
 
+                    // 2. Setup Course Link
+                    const courseLink = `${doceboDomain}/learn/courses/${course.id}/${course.slug}`;
+
+                    // 3. Inject into the table row
                     tr.innerHTML = `
-                        <td><strong>${course.name}</strong></td>
+                        <td><a href="${courseLink}" target="_blank" class="course-link">${course.name}</a></td>
                         <td>${course.type.toUpperCase()}</td>
-                        <td>${course.completion_date.split(' ')[0]}</td> <td>${certHtml}</td>
+                        <td>${course.completion_date.split(' ')[0]}</td>
+                        <td>${certHtml}</td>
                     `;
                     tableBody.appendChild(tr);
                 });
