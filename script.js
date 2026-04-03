@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            // STEP A: Exchange Auth Code for Access Token
             apiStatus.textContent = "Exchanging auth code for token...";
             
             const tokenBody = new URLSearchParams({
@@ -95,46 +96,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const tokenData = await tokenResponse.json();
             const accessToken = tokenData.access_token;
 
-            apiStatus.textContent = "Token received! Fetching transcript...";
-            
+            // STEP B: Fetch the Transcript (Courses)
+            apiStatus.textContent = "Token received! Fetching courses...";
             const transcriptResponse = await fetch(`${doceboDomain}/report/v1/mytranscript?page=1&page_size=100`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
 
-            if (!transcriptResponse.ok) {
-                throw new Error(`Transcript fetch failed: ${transcriptResponse.status}`);
-            }
+            if (!transcriptResponse.ok) throw new Error(`Transcript fetch failed: ${transcriptResponse.status}`);
 
             const transcriptData = await transcriptResponse.json();
             const allItems = transcriptData.data.items;
             
-            // NEW FILTER: Must be completed AND have a certificate
             const certifiedCourses = allItems.filter(item => 
                 item.completion_date !== null && 
                 (item.has_certificate === true || item.certificate_url !== null)
             );
             
-            // Clear out any old rows
+            const tableBody = document.getElementById('course_table_body');
             tableBody.innerHTML = ''; 
 
             if (certifiedCourses.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No certified courses found.</td></tr>';
             } else {
-                // Build the table rows
                 certifiedCourses.forEach(course => {
                     const tr = document.createElement('tr');
-                    
-                    // 1. Setup Certificate URL
                     const fullCertUrl = course.certificate_url.startsWith('http') 
                         ? course.certificate_url 
                         : `${doceboDomain}${course.certificate_url}`;
                     const certHtml = `<a href="${fullCertUrl}" target="_blank" class="cert-btn">Download</a>`;
-
-                    // 2. Setup Course Link
                     const courseLink = `${doceboDomain}/learn/courses/${course.id}/${course.slug}`;
 
-                    // 3. Inject into the table row
                     tr.innerHTML = `
                         <td><a href="${courseLink}" target="_blank" class="course-link">${course.name}</a></td>
                         <td>${course.type.toUpperCase()}</td>
@@ -145,7 +137,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // SUCCESS FLOW: Hide the action inputs and show the table
+            // STEP C: NEW - Fetch Certifications
+            apiStatus.textContent = "Fetching certifications...";
+            const userId = params.get('user_id'); // Grabbed from the URL
+            
+            const certResponse = await fetch(`${doceboDomain}/certification/v1/awards/users/${userId}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            if (!certResponse.ok) throw new Error(`Certification fetch failed: ${certResponse.status}`);
+
+            const certData = await certResponse.json();
+            // The JSON structure puts the array inside data.items
+            const certItems = certData.data.items || []; 
+            
+            const certTableBody = document.getElementById('cert_table_body');
+            certTableBody.innerHTML = '';
+
+            if (certItems.length === 0) {
+                certTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No certifications found.</td></tr>';
+            } else {
+                certItems.forEach(cert => {
+                    const tr = document.createElement('tr');
+                    
+                    // Safely extract values in case of nulls
+                    const certName = cert.certification ? cert.certification.name : 'Unknown Certification';
+                    const issuedDate = cert.issued_at ? cert.issued_at.split(' ')[0] : 'N/A';
+                    
+                    // If expiring_at is null, the certification doesn't expire
+                    const expiringDate = cert.expiring_at 
+                        ? cert.expiring_at.split(' ')[0] 
+                        : '<span class="text-muted">Never</span>';
+
+                    tr.innerHTML = `
+                        <td><strong>${certName}</strong></td>
+                        <td>${issuedDate}</td>
+                        <td>${expiringDate}</td>
+                    `;
+                    certTableBody.appendChild(tr);
+                });
+            }
+
+            // SUCCESS FLOW: Hide inputs, show tables, clear status
+            apiStatus.textContent = "";
             actionSections.classList.add('hidden');
             resultsSection.classList.remove('hidden');
 
